@@ -24,6 +24,9 @@ const Navbar = () => {
               <Link href="/teams" data-testid="nav-teams" className="transition hover:text-blue-600">Tim</Link>
             </li>
             <li>
+              <Link href="/explorer" data-testid="nav-explorer" className="transition hover:text-blue-600">Jelajahi</Link>
+            </li>
+            <li>
               <Link href="/contact" data-testid="nav-contact" className="transition hover:text-blue-600">Kontak</Link>
             </li>
           </ul>
@@ -62,6 +65,9 @@ const Navbar = () => {
                 </li>
                 <li>
                   <Link href="/teams" data-testid="nav-mobile-teams" className="block rounded-lg px-3 py-2 hover:bg-slate-100">Tim</Link>
+                </li>
+                <li>
+                  <Link href="/explorer" data-testid="nav-mobile-explorer" className="block rounded-lg px-3 py-2 hover:bg-slate-100">Jelajahi</Link>
                 </li>
                 <li>
                   <Link href="/contact" data-testid="nav-mobile-contact" className="block rounded-lg px-3 py-2 hover:bg-slate-100">Kontak</Link>
