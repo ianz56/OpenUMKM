@@ -37,18 +37,18 @@ const services = [
         features: ['Status real-time', 'Jam buka fleksibel', 'Foto profil & banner', 'Deskripsi usaha'],
     },
     {
-        icon: 'ri-line-chart-line',
+        icon: 'ri-smartphone-line',
         accent: 'blue',
-        title: 'Analitik Sederhana',
-        desc: 'Pantau jumlah kunjungan profil, klik kontak, dan produk paling diminati.',
-        features: ['Statistik harian', 'Produk terpopuler', 'Sumber pengunjung', 'Laporan mingguan'],
+        title: 'Antarmuka Sederhana',
+        desc: 'Akses seluruh informasi usaha dengan mudah melalui tampilan yang rapi dan responsif di berbagai perangkat.',
+        features: ['Akses dari HP & Laptop', 'Navigasi intuitif', 'Tampilan bersih', 'Performa cepat'],
     },
     {
-        icon: 'ri-customer-service-2-line',
+        icon: 'ri-global-line',
         accent: 'emerald',
-        title: 'Dukungan Komunitas',
-        desc: 'Forum, panduan, dan komunitas yang siap membantu Anda berkembang.',
-        features: ['Panduan langkah-demi-langkah', 'Forum tanya-jawab', 'Webinar UMKM', 'Tips marketing'],
+        title: 'Akses Darimana Saja',
+        desc: 'Platform berbasis web yang dapat diakses langsung tanpa perlu mengunduh aplikasi tambahan.',
+        features: ['Tanpa instalasi', 'Hemat memori HP', 'Akses dari browser', 'Dukungan lintas perangkat'],
     },
 ];
 
