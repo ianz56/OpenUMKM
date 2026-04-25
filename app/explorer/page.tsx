@@ -225,6 +225,37 @@ export default function ExplorerPage() {
 
 
 
+                {/* Filters */}
+                <section className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between bg-white/50 backdrop-blur-sm p-4 rounded-2xl border border-slate-200 shadow-sm">
+                    <div className="relative flex-grow max-w-md">
+                        <i className="ri-search-line absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input
+                            type="text"
+                            placeholder="Cari produk..."
+                            className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-10 pr-4 text-sm text-slate-900 transition placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10"
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                        />
+                    </div>
+                    <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2">
+                            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Kategori:</span>
+                            <select
+                                className="rounded-xl border border-slate-200 bg-white py-2.5 pl-4 pr-10 text-sm font-medium text-slate-700 transition focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10 appearance-none cursor-pointer"
+                                style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'%2364748b\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\'%3E%3C/path%3E%3C/svg%3E")', backgroundPosition: 'right 0.75rem center', backgroundSize: '1rem', backgroundRepeat: 'no-repeat' }}
+                                value={category}
+                                onChange={(e) => setCategory(e.target.value)}
+                            >
+                                {categories.map((c) => (
+                                    <option key={c} value={c} className="capitalize">
+                                        {c === 'all' ? 'Semua Kategori' : c.replace(/-/g, ' ')}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
+                </section>
+
                 {/* Product Grid */}
                 <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
                     <div className="mb-6">
