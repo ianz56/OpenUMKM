@@ -24,10 +24,10 @@ const Navbar = () => {
               <Link href="/teams" data-testid="nav-teams" className="transition hover:text-blue-600">Tim</Link>
             </li>
             <li>
-              <Link href="/explorer" data-testid="nav-explorer" className="transition hover:text-blue-600">Jelajahi</Link>
+              <Link href="/contact" data-testid="nav-contact" className="transition hover:text-blue-600">Kontak</Link>
             </li>
             <li>
-              <Link href="/contact" data-testid="nav-contact" className="transition hover:text-blue-600">Kontak</Link>
+              <Link href="/experiment" data-testid="nav-experiment" className="transition hover:text-blue-600">Eksperimen</Link>
             </li>
           </ul>
         </nav>
