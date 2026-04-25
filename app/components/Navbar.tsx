@@ -67,7 +67,7 @@ const Navbar = () => {
                   <Link href="/teams" data-testid="nav-mobile-teams" className="block rounded-lg px-3 py-2 hover:bg-slate-100">Tim</Link>
                 </li>
                 <li>
-                  <Link href="/explorer" data-testid="nav-mobile-explorer" className="block rounded-lg px-3 py-2 hover:bg-slate-100">Jelajahi</Link>
+                  <Link href="/experiment" data-testid="nav-mobile-experiment" className="block rounded-lg px-3 py-2 hover:bg-slate-100">Eksperimen</Link>
                 </li>
                 <li>
                   <Link href="/contact" data-testid="nav-mobile-contact" className="block rounded-lg px-3 py-2 hover:bg-slate-100">Kontak</Link>

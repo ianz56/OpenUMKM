@@ -147,6 +147,8 @@ export default function ExplorerPage() {
     const [error, setError] = useState<string | null>(null);
     const [search, setSearch] = useState('');
     const [category, setCategory] = useState('all');
+    const [sortBy, setSortBy] = useState('none');
+    const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
     const [fetchTime, setFetchTime] = useState<number | null>(null);
     const [totalFromApi, setTotalFromApi] = useState<number>(0);
 
@@ -179,7 +181,7 @@ export default function ExplorerPage() {
     }, [fetchProducts]);
 
     useEffect(() => {
-        let result = products;
+        let result = [...products];
         if (category !== 'all') {
             result = result.filter((p) => p.category === category);
         }
@@ -192,8 +194,26 @@ export default function ExplorerPage() {
                     (p.brand && p.brand.toLowerCase().includes(q)),
             );
         }
+
+        if (sortBy === 'price-low') {
+            result.sort((a, b) => a.price - b.price);
+        } else if (sortBy === 'price-high') {
+            result.sort((a, b) => b.price - a.price);
+        } else if (sortBy === 'rating') {
+            result.sort((a, b) => b.rating - a.rating);
+        } else if (sortBy === 'title') {
+            result.sort((a, b) => a.title.localeCompare(b.title));
+        }
+
         setFiltered(result);
-    }, [search, category, products]);
+    }, [search, category, sortBy, products]);
+
+    const stats = {
+        total: filtered.length,
+        avgPrice: filtered.length ? filtered.reduce((acc, p) => acc + p.price, 0) / filtered.length : 0,
+        avgRating: filtered.length ? filtered.reduce((acc, p) => acc + p.rating, 0) / filtered.length : 0,
+        categories: new Set(filtered.map(p => p.category)).size
+    };
 
     const categories = ['all', ...Array.from(new Set(products.map((p) => p.category)))];
 
@@ -206,7 +226,7 @@ export default function ExplorerPage() {
                 <section className="relative isolate overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 sm:p-10">
                     <div className="max-w-3xl">
                         <h1 className="mt-4 text-3xl font-black leading-tight tracking-tight text-slate-900 sm:text-4xl lg:text-5xl">
-                            Katalog Produk <span className="text-blue-600">DummyJSON</span>
+                            Eksperimen <span className="text-blue-600">Data API</span>
                         </h1>
                         <p className="mt-4 text-base leading-relaxed text-slate-600 sm:text-lg">
                             Semua produk di halaman ini diambil langsung dari{' '}
@@ -218,41 +238,100 @@ export default function ExplorerPage() {
                             >
                                 dummyjson.com
                             </a>
-                            {' '}lewat API. Untuk pelengkap dan memenuhi kriteria tugas :D.
+                            {' '}lewat API. Untuk pelengkap dan memenuhi kriteria tugas :D
                         </p>
+                    </div>
+                </section>
+
+                {/* Stats Summary */}
+                <section className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+                    <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-blue-200">
+                        <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Total Produk</p>
+                        <p className="mt-1 text-2xl font-black text-slate-900">{stats.total}</p>
+                    </div>
+                    <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-blue-200">
+                        <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Rata-rata Harga</p>
+                        <p className="mt-1 text-2xl font-black text-slate-900">{formatCurrency(stats.avgPrice)}</p>
+                    </div>
+                    <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-blue-200">
+                        <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Rata-rata Rating</p>
+                        <div className="mt-1 flex items-center gap-2">
+                            <p className="text-2xl font-black text-slate-900">{stats.avgRating.toFixed(1)}</p>
+                            <i className="ri-star-fill text-amber-400"></i>
+                        </div>
+                    </div>
+                    <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-blue-200">
+                        <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Kategori Aktif</p>
+                        <p className="mt-1 text-2xl font-black text-slate-900">{stats.categories}</p>
                     </div>
                 </section>
 
 
 
-                {/* Filters */}
-                <section className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between bg-white/50 backdrop-blur-sm p-4 rounded-2xl border border-slate-200 shadow-sm">
-                    <div className="relative flex-grow max-w-md">
-                        <i className="ri-search-line absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                        <input
-                            type="text"
-                            placeholder="Cari produk..."
-                            className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-10 pr-4 text-sm text-slate-900 transition placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10"
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                        />
-                    </div>
-                    <div className="flex items-center gap-3">
-                        <div className="flex items-center gap-2">
-                            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Kategori:</span>
-                            <select
-                                className="rounded-xl border border-slate-200 bg-white py-2.5 pl-4 pr-10 text-sm font-medium text-slate-700 transition focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10 appearance-none cursor-pointer"
-                                style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'%2364748b\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\'%3E%3C/path%3E%3C/svg%3E")', backgroundPosition: 'right 0.75rem center', backgroundSize: '1rem', backgroundRepeat: 'no-repeat' }}
-                                value={category}
-                                onChange={(e) => setCategory(e.target.value)}
-                            >
-                                {categories.map((c) => (
-                                    <option key={c} value={c} className="capitalize">
-                                        {c === 'all' ? 'Semua Kategori' : c.replace(/-/g, ' ')}
-                                    </option>
-                                ))}
-                            </select>
+                {/* Filters & Sorting */}
+                <section className="flex flex-col gap-4 bg-white/50 backdrop-blur-sm p-4 rounded-2xl border border-slate-200 shadow-sm">
+                    <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                        <div className="relative flex-grow max-w-md">
+                            <i className="ri-search-line absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                            <input
+                                type="text"
+                                placeholder="Cari produk..."
+                                className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-10 pr-4 text-sm text-slate-900 transition placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10"
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
+                            />
                         </div>
+
+                        <div className="flex flex-wrap items-center gap-3">
+                            <div className="flex items-center gap-2">
+                                <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Urutkan:</span>
+                                <select
+                                    className="rounded-xl border border-slate-200 bg-white py-2 pl-3 pr-8 text-xs font-medium text-slate-700 focus:border-blue-500 focus:outline-none appearance-none cursor-pointer"
+                                    style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'%2364748b\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\'%3E%3C/path%3E%3C/svg%3E")', backgroundPosition: 'right 0.5rem center', backgroundSize: '0.8rem', backgroundRepeat: 'no-repeat' }}
+                                    value={sortBy}
+                                    onChange={(e) => setSortBy(e.target.value)}
+                                >
+                                    <option value="none">Default</option>
+                                    <option value="price-low">Harga Terendah</option>
+                                    <option value="price-high">Harga Tertinggi</option>
+                                    <option value="rating">Rating Tertinggi</option>
+                                    <option value="title">Nama (A-Z)</option>
+                                </select>
+                            </div>
+
+                            <div className="flex items-center gap-2 border-l border-slate-200 pl-3">
+                                <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Tampilan:</span>
+                                <div className="flex rounded-lg bg-slate-100 p-1">
+                                    <button
+                                        type="button"
+                                        onClick={() => setViewMode('grid')}
+                                        className={`rounded-md p-1.5 transition ${viewMode === 'grid' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                                    >
+                                        <i className="ri-grid-fill text-lg"></i>
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => setViewMode('table')}
+                                        className={`rounded-md p-1.5 transition ${viewMode === 'table' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                                    >
+                                        <i className="ri-list-check text-lg"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-slate-100">
+                        <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Filter:</span>
+                        {categories.map((c) => (
+                            <button
+                                key={c}
+                                onClick={() => setCategory(c)}
+                                className={`rounded-full px-3 py-1 text-xs font-medium transition ${category === c ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+                            >
+                                {c === 'all' ? 'Semua' : c.replace(/-/g, ' ')}
+                            </button>
+                        ))}
                     </div>
                 </section>
 
@@ -298,11 +377,62 @@ export default function ExplorerPage() {
                     )}
 
                     {status === 'success' && filtered.length > 0 && (
-                        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" data-testid="product-grid">
-                            {filtered.map((product) => (
-                                <ProductCard key={product.id} product={product} />
-                            ))}
-                        </div>
+                        <>
+                            {viewMode === 'grid' ? (
+                                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" data-testid="product-grid">
+                                    {filtered.map((product) => (
+                                        <ProductCard key={product.id} product={product} />
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="overflow-x-auto rounded-xl border border-slate-200">
+                                    <table className="w-full text-left text-sm">
+                                        <thead className="bg-slate-50 text-xs font-bold uppercase tracking-wider text-slate-500">
+                                            <tr>
+                                                <th className="px-4 py-3">Produk</th>
+                                                <th className="px-4 py-3">Kategori</th>
+                                                <th className="px-4 py-3">Brand</th>
+                                                <th className="px-4 py-3">Rating</th>
+                                                <th className="px-4 py-3">Stok</th>
+                                                <th className="px-4 py-3 text-right">Harga</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y divide-slate-200 bg-white">
+                                            {filtered.map((product) => (
+                                                <tr key={product.id} className="hover:bg-slate-50 transition">
+                                                    <td className="px-4 py-4">
+                                                        <div className="flex items-center gap-3">
+                                                            <img src={product.thumbnail} alt="" className="h-10 w-10 rounded-lg object-cover" />
+                                                            <span className="font-bold text-slate-900">{product.title}</span>
+                                                        </div>
+                                                    </td>
+                                                    <td className="px-4 py-4">
+                                                        <span className="inline-flex rounded-full bg-slate-100 px-2 py-1 text-[10px] font-bold uppercase text-slate-600">
+                                                            {product.category}
+                                                        </span>
+                                                    </td>
+                                                    <td className="px-4 py-4 text-slate-600">{product.brand || '-'}</td>
+                                                    <td className="px-4 py-4">
+                                                        <div className="flex items-center gap-1">
+                                                            <i className="ri-star-fill text-amber-400"></i>
+                                                            <span className="font-medium text-slate-900">{product.rating}</span>
+                                                        </div>
+                                                    </td>
+                                                    <td className="px-4 py-4">
+                                                        <span className={product.stock > 10 ? 'text-emerald-600' : 'text-amber-600 font-bold'}>
+                                                            {product.stock}
+                                                        </span>
+                                                    </td>
+                                                    <td className="px-4 py-4 text-right font-black text-slate-900">
+                                                        {formatCurrency(product.price * (1 - product.discountPercentage / 100))}
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            )}
+                        </>
                     )}
 
                     {status === 'success' && filtered.length === 0 && (
