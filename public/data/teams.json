@@ -1,0 +1,31 @@
+{
+  "teams": [
+    {
+      "slug": "sasha-kurniawan",
+      "name": "Sasha Kurniawan",
+      "role": "UI/UX Designer",
+      "desc": "Spesialis dalam menciptakan antarmuka yang bersih dan pengalaman pengguna yang fokus pada konversi UMKM.",
+      "bio": "Berfokus pada desain produk digital sejak 2020. Sasha telah membantu lebih dari 50 UMKM mendesain identitas visual dan antarmuka aplikasi mereka agar lebih kompetitif di pasar digital.",
+      "skills": ["Figma", "Adobe XD", "Prototyping", "User Research"],
+      "image": "/assets/img/teams-1.jpg"
+    },
+    {
+      "slug": "budi-santoso",
+      "name": "Budi Santoso",
+      "role": "Backend Engineer",
+      "desc": "Expert dalam arsitektur microservices dan optimasi query database untuk skala besar.",
+      "bio": "Seorang engineer yang mencintai arsitektur server yang efisien. Berpengalaman dalam mengelola database skala besar dan memastikan keamanan transaksi pada platform marketplace.",
+      "skills": ["Laravel", "Node.js", "PostgreSQL", "Redis"],
+      "image": "/assets/img/teams-2.jpg"
+    },
+    {
+      "slug": "mohammad-zam",
+      "name": "Mohammad Zam",
+      "role": "Lead Developer",
+      "desc": "Fullstack Developer yang mengintegrasikan ekosistem OpenUMKM dari sisi server hingga client.",
+      "bio": "Otak di balik infrastruktur OpenUMKM. Zam menggabungkan keahlian backend yang kuat dengan interface modern untuk menciptakan solusi yang user-friendly bagi pemilik usaha.",
+      "skills": ["Next.js", "Express.js", "Prisma", "Docker"],
+      "image": "/assets/img/teams-2.jpg"
+    }
+  ]
+}
