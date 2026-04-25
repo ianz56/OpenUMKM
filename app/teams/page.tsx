@@ -53,9 +53,14 @@ export default async function TeamsPage() {
               </div>
               <div className="mt-6 flex items-center justify-between">
                 <div className="flex gap-2">
-                  <button className="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 text-slate-600 transition hover:bg-slate-200">
+                  <a
+                    href={member.github || "https://github.com"}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 text-slate-600 transition hover:bg-slate-200"
+                  >
                     <i className="ri-github-fill"></i>
-                  </button>
+                  </a>
                 </div>
                 <Link
                   href={`/teams/${member.slug}`}
