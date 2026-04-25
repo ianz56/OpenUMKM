@@ -279,7 +279,6 @@ export default function ContactPage() {
                 {/* Map placeholder */}
                 <section data-aos="fade-up" className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8" data-testid="contact-map">
                     <h2 className="text-2xl font-black tracking-tight text-slate-900">Lokasi Hub</h2>
-                    <p className="mt-2 text-slate-600">Indikatif — kunjungan harap dengan janji temu sebelumnya.</p>
                     <div className="mt-5 overflow-hidden rounded-xl border border-slate-200">
                         <iframe
                             title="Lokasi OpenUMKM"

@@ -24,13 +24,13 @@ const Footer = () => {
             </div>
             <div className="grid gap-3 sm:flex sm:flex-wrap">
               <a
-                href="#"
+                href="/contact"
                 className="rounded-xl bg-white px-6 py-3 text-center text-sm font-semibold text-blue-700 shadow-sm transition hover:bg-blue-50"
               >
                 Gabung Sekarang
               </a>
               <a
-                href="#"
+                href="/services"
                 className="rounded-xl border border-white/60 px-6 py-3 text-center text-sm font-semibold text-white transition hover:bg-white/10"
               >
                 Pelajari Lebih Lanjut
@@ -44,13 +44,13 @@ const Footer = () => {
           <p className="text-sm text-slate-500">
             &copy; {new Date().getFullYear()} OpenUMKM
           </p>
-          
+
           <nav aria-label="Navigasi Bawah">
             <ul className="flex gap-6 text-sm font-medium text-slate-500">
               {footerLinks.map((link) => (
                 <li key={link.name}>
-                  <a 
-                    href={link.href} 
+                  <a
+                    href={link.href}
                     className="transition hover:text-blue-600"
                   >
                     {link.name}

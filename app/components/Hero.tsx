@@ -5,7 +5,7 @@ const Hero = () => {
     >
         <div
             aria-hidden="true"
-            className="pointer-events-none absolute inset-0 z-0 rounded-2xl bg-[url('/assets/img/gambar.png')] bg-center bg-no-repeat opacity-50 md:bg-right"
+            className="pointer-events-none absolute inset-0 z-0 rounded-2xl bg-[url('/assets/img/gambar.png')] bg-center bg-no-repeat opacity-50 md:bg-right md:opacity-100 md:mask-l-to-66%"
             style={{ backgroundSize: 'auto 600px' }}
         ></div>
 

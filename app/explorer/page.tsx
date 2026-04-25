@@ -205,9 +205,6 @@ export default function ExplorerPage() {
                 {/* Hero */}
                 <section className="relative isolate overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 sm:p-10">
                     <div className="max-w-3xl">
-                        <span className="inline-block rounded-full bg-violet-50 px-3 py-1 text-xs font-bold uppercase tracking-wide text-violet-700">
-                            Live Fetch
-                        </span>
                         <h1 className="mt-4 text-3xl font-black leading-tight tracking-tight text-slate-900 sm:text-4xl lg:text-5xl">
                             Katalog Produk <span className="text-blue-600">DummyJSON</span>
                         </h1>
@@ -221,10 +218,8 @@ export default function ExplorerPage() {
                             >
                                 dummyjson.com
                             </a>
-                            {' '}lewat API. Untuk memenuhi kriteria tugas :D.
+                            {' '}lewat API. Untuk pelengkap dan memenuhi kriteria tugas :D.
                         </p>
-
-
                     </div>
                 </section>
 
