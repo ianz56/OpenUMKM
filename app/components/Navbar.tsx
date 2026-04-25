@@ -1,46 +1,47 @@
 import React from 'react';
-import Link from 'next/link'; // Import Link dari Next.js
+import Link from 'next/link';
 
 const Navbar = () => {
   return (
     <header className="sticky top-0 z-10 border-b border-slate-200 bg-white/80 backdrop-blur-md">
       <div className="mx-auto flex items-center gap-3 px-4 py-3 sm:gap-4 sm:px-6 lg:px-8">
-        <Link href="/" className="text-xl font-black tracking-tight text-slate-900 sm:text-2xl">
+        <Link href="/" data-testid="nav-logo" className="text-xl font-black tracking-tight text-slate-900 sm:text-2xl">
           OpenUMKM
         </Link>
 
         <nav aria-label="Menu utama" className="hidden flex-1 justify-center lg:flex">
           <ul className="flex items-center gap-10 text-sm font-semibold text-slate-700">
             <li>
-              <Link href="/" className="transition hover:text-blue-600">Beranda</Link>
+              <Link href="/" data-testid="nav-home" className="transition hover:text-blue-600">Beranda</Link>
             </li>
             <li>
-              <Link href="/#benefits" className="transition hover:text-blue-600">Jelajahi</Link>
+              <Link href="/services" data-testid="nav-services" className="transition hover:text-blue-600">Layanan</Link>
             </li>
             <li>
-              <Link href="/#features" className="transition hover:text-blue-600">Fitur</Link>
+              <Link href="/about-us" data-testid="nav-about" className="transition hover:text-blue-600">Tentang Kami</Link>
             </li>
             <li>
-              <Link href="/teams" className="transition hover:text-blue-600">Teams</Link>
+              <Link href="/teams" data-testid="nav-teams" className="transition hover:text-blue-600">Tim</Link>
             </li>
             <li>
-              <Link href="/#kontak" className="transition hover:text-blue-600">Kontak</Link>
+              <Link href="/contact" data-testid="nav-contact" className="transition hover:text-blue-600">Kontak</Link>
             </li>
           </ul>
         </nav>
 
         <div className="ml-auto flex items-center gap-3">
           <Link
-            href="/#kontak"
+            href="/contact"
+            data-testid="nav-cta-join"
             className="hidden rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow transition hover:bg-blue-700 sm:inline-block"
           >
             Gabung Sekarang
           </Link>
 
-          {/* Burger mobile */}
           <details className="relative lg:hidden">
             <summary
               className="flex h-10 w-10 cursor-pointer list-none items-center justify-center rounded-lg border border-slate-200 text-slate-700 transition hover:bg-slate-100"
+              data-testid="nav-mobile-toggle"
             >
               <span className="sr-only">Buka menu mobile</span>
               <i className="ri-menu-line text-lg"></i>
@@ -51,23 +52,24 @@ const Navbar = () => {
             >
               <ul className="space-y-2 text-sm font-semibold text-slate-700">
                 <li>
-                  <Link href="/" className="block rounded-lg px-3 py-2 hover:bg-slate-100">Beranda</Link>
+                  <Link href="/" data-testid="nav-mobile-home" className="block rounded-lg px-3 py-2 hover:bg-slate-100">Beranda</Link>
                 </li>
                 <li>
-                  <Link href="/#benefits" className="block rounded-lg px-3 py-2 hover:bg-slate-100">Jelajahi</Link>
+                  <Link href="/services" data-testid="nav-mobile-services" className="block rounded-lg px-3 py-2 hover:bg-slate-100">Layanan</Link>
                 </li>
                 <li>
-                  <Link href="/#features" className="block rounded-lg px-3 py-2 hover:bg-slate-100">Fitur</Link>
+                  <Link href="/about-us" data-testid="nav-mobile-about" className="block rounded-lg px-3 py-2 hover:bg-slate-100">Tentang Kami</Link>
                 </li>
                 <li>
-                  <Link href="/teams" className="block rounded-lg px-3 py-2 hover:bg-slate-100 font-bold text-blue-600">Teams</Link>
+                  <Link href="/teams" data-testid="nav-mobile-teams" className="block rounded-lg px-3 py-2 hover:bg-slate-100">Tim</Link>
                 </li>
                 <li>
-                  <Link href="/#kontak" className="block rounded-lg px-3 py-2 hover:bg-slate-100">Kontak</Link>
+                  <Link href="/contact" data-testid="nav-mobile-contact" className="block rounded-lg px-3 py-2 hover:bg-slate-100">Kontak</Link>
                 </li>
                 <li>
                   <Link
-                    href="/#kontak"
+                    href="/contact"
+                    data-testid="nav-mobile-cta-join"
                     className="mt-2 block rounded-lg bg-blue-600 px-3 py-2 text-center text-white"
                   >
                     Gabung Sekarang
