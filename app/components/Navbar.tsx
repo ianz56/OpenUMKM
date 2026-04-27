@@ -27,7 +27,7 @@ const Navbar = () => {
               <Link href="/contact" data-testid="nav-contact" className="transition hover:text-blue-600">Kontak</Link>
             </li>
             <li>
-              <Link href="/experiment" data-testid="nav-experiment" className="transition hover:text-blue-600">Eksperimen</Link>
+              <Link href="/experiment" data-testid="nav-experiment" className="transition hover:text-blue-600">Daftar Mitra</Link>
             </li>
           </ul>
         </nav>
@@ -67,7 +67,7 @@ const Navbar = () => {
                   <Link href="/teams" data-testid="nav-mobile-teams" className="block rounded-lg px-3 py-2 hover:bg-slate-100">Tim</Link>
                 </li>
                 <li>
-                  <Link href="/experiment" data-testid="nav-mobile-experiment" className="block rounded-lg px-3 py-2 hover:bg-slate-100">Eksperimen</Link>
+                  <Link href="/experiment" data-testid="nav-mobile-experiment" className="block rounded-lg px-3 py-2 hover:bg-slate-100">Daftar Mitra</Link>
                 </li>
                 <li>
                   <Link href="/contact" data-testid="nav-mobile-contact" className="block rounded-lg px-3 py-2 hover:bg-slate-100">Kontak</Link>

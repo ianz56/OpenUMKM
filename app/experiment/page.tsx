@@ -4,53 +4,87 @@ import Footer from '@/app/components/Footer';
 import Navbar from '@/app/components/Navbar';
 import { useEffect, useState, useCallback } from 'react';
 
-interface Product {
+interface Address {
     id: number;
-    title: string;
-    description: string;
-    price: number;
-    discountPercentage: number;
-    rating: number;
-    stock: number;
-    brand: string;
-    category: string;
-    thumbnail: string;
-    images: string[];
+    street: string;
+    streetName: string;
+    buildingNumber: string;
+    city: string;
+    zipcode: string;
+    country: string;
+    country_code: string;
+    latitude: number;
+    longitude: number;
+}
+
+interface Contact {
+    id: number;
+    firstname: string;
+    lastname: string;
+    email: string;
+    phone: string;
+    birthday: string;
+    gender: string;
+    website: string;
+    image: string;
+}
+
+interface Company {
+    id: number;
+    name: string;
+    email: string;
+    vat: string;
+    phone: string;
+    country: string;
+    addresses: Address[];
+    website: string;
+    image: string;
+    contact: Contact;
 }
 
 interface ApiResponse {
-    products: Product[];
+    status: string;
+    code: number;
     total: number;
-    skip: number;
-    limit: number;
+    data: Company[];
 }
 
-function formatCurrency(value: number) {
-    return new Intl.NumberFormat('id-ID', {
-        style: 'currency',
-        currency: 'USD',
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0,
-    }).format(value);
+function formatName(firstname: string, lastname: string) {
+    return `${firstname} ${lastname}`;
 }
 
-function ratingStars(rating: number) {
-    const full = Math.floor(rating);
-    const half = rating - full >= 0.5;
-    const empty = 5 - full - (half ? 1 : 0);
-    return { full, half, empty };
+function CompanyAvatar({ name, image }: { name: string; image: string }) {
+    return (
+        <div className="relative h-12 w-12 overflow-hidden rounded-full border-2 border-white bg-slate-100 shadow-sm ring-1 ring-slate-200">
+            <img
+                src={image}
+                alt={name}
+                onError={(e) => {
+                    (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random&color=fff`;
+                }}
+                className="h-full w-full object-cover"
+            />
+        </div>
+    );
 }
 
 function SkeletonCard() {
     return (
-        <article className="animate-pulse rounded-xl border border-slate-200 bg-slate-50 p-4">
-            <div className="aspect-square w-full rounded-lg bg-slate-200" />
-            <div className="mt-4 h-4 w-3/4 rounded bg-slate-200" />
-            <div className="mt-2 h-3 w-full rounded bg-slate-200" />
-            <div className="mt-1 h-3 w-5/6 rounded bg-slate-200" />
-            <div className="mt-4 flex items-center justify-between">
-                <div className="h-5 w-16 rounded bg-slate-200" />
-                <div className="h-5 w-12 rounded bg-slate-200" />
+        <article className="animate-pulse rounded-xl border border-slate-200 bg-slate-50 p-5">
+            <div className="flex items-start gap-4">
+                <div className="h-12 w-12 rounded-full bg-slate-200" />
+                <div className="flex-grow space-y-2">
+                    <div className="h-4 w-3/4 rounded bg-slate-200" />
+                    <div className="h-3 w-1/2 rounded bg-slate-200" />
+                </div>
+            </div>
+            <div className="mt-6 space-y-3">
+                <div className="h-3 w-full rounded bg-slate-200" />
+                <div className="h-3 w-5/6 rounded bg-slate-200" />
+            </div>
+            <div className="mt-6 flex gap-2">
+                <div className="h-8 flex-grow rounded-lg bg-slate-200" />
+                <div className="h-8 w-8 rounded-lg bg-slate-200" />
             </div>
         </article>
     );
@@ -75,97 +109,97 @@ function StatusBadge({ status }: { status: 'idle' | 'loading' | 'success' | 'err
     );
 }
 
-function ProductCard({ product }: { product: Product }) {
-    const stars = ratingStars(product.rating);
-    const discountedPrice = product.price * (1 - product.discountPercentage / 100);
-
+function CompanyCard({ company }: { company: Company }) {
     return (
         <article
-            data-testid={`product-card-${product.id}`}
-            className="group rounded-xl border border-slate-200 bg-white p-4 transition hover:-translate-y-0.5 hover:shadow-lg"
+            data-testid={`company-card-${company.id}`}
+            className="group rounded-2xl border border-slate-200 bg-white p-5 transition hover:-translate-y-1 hover:shadow-xl"
         >
-            <div className="relative aspect-square overflow-hidden rounded-lg bg-slate-100">
-                <img
-                    src={product.thumbnail}
-                    alt={product.title}
-                    loading="lazy"
-                    className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
-                />
-                {product.discountPercentage > 5 && (
-                    <span className="absolute top-2 left-2 rounded-full bg-red-500 px-2 py-0.5 text-[10px] font-bold text-white shadow">
-                        -{Math.round(product.discountPercentage)}%
-                    </span>
-                )}
-                <span className="absolute top-2 right-2 rounded-full bg-white/90 px-2 py-0.5 text-[10px] font-bold text-slate-600 shadow backdrop-blur-sm">
-                    {product.category}
-                </span>
-            </div>
-
-            <div className="mt-3">
-                {product.brand && (
-                    <p className="text-[11px] font-semibold uppercase tracking-wide text-blue-600">
-                        {product.brand}
-                    </p>
-                )}
-                <h3 className="mt-0.5 line-clamp-1 text-sm font-bold text-slate-900">{product.title}</h3>
-                <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-slate-500">{product.description}</p>
-            </div>
-
-            <div className="mt-3 flex items-center gap-1">
-                {[...Array(stars.full)].map((_, i) => (
-                    <i key={`full-${product.id}-${i}`} className="ri-star-fill text-sm text-amber-400" />
-                ))}
-                {stars.half ? <i className="ri-star-half-fill text-sm text-amber-400" /> : null}
-                {[...Array(stars.empty)].map((_, i) => (
-                    <i key={`empty-${product.id}-${i}`} className="ri-star-line text-sm text-slate-300" />
-                ))}
-                <span className="ml-1 text-xs text-slate-400">{product.rating.toFixed(1)}</span>
-            </div>
-
-            <div className="mt-3 flex items-end justify-between">
-                <div>
-                    <p className="text-lg font-black text-slate-900">{formatCurrency(discountedPrice)}</p>
-                    {product.discountPercentage > 5 && (
-                        <p className="text-xs text-slate-400 line-through">{formatCurrency(product.price)}</p>
-                    )}
+            <div className="flex items-start justify-between">
+                <div className="flex items-center gap-4">
+                    <CompanyAvatar name={company.name} image={company.image} />
+                    <div>
+                        <h3 className="line-clamp-1 text-base font-black text-slate-900 group-hover:text-blue-600 transition-colors">
+                            {company.name}
+                        </h3>
+                        <p className="flex items-center gap-1 text-xs font-semibold text-slate-500">
+                            <i className="ri-map-pin-line text-blue-500"></i>
+                            {company.country}
+                        </p>
+                    </div>
                 </div>
-                <span
-                    className={`text-[11px] font-semibold ${product.stock > 10 ? 'text-emerald-600' : product.stock > 0 ? 'text-amber-600' : 'text-red-500'
-                        }`}
+                <div className="rounded-full bg-slate-50 p-2 text-slate-400 transition group-hover:bg-blue-50 group-hover:text-blue-600">
+                    <i className="ri-external-link-line"></i>
+                </div>
+            </div>
+
+            <div className="mt-6 space-y-4">
+                <div className="rounded-xl border border-slate-100 bg-slate-50/50 p-3">
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Kontak Person</p>
+                    <div className="mt-2 flex items-center gap-3">
+                        <img
+                            src={company.contact.image}
+                            alt=""
+                            className="h-8 w-8 rounded-lg bg-white border border-slate-200"
+                            onError={(e) => (e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(company.contact.firstname)}&background=random`)}
+                        />
+                        <div>
+                            <p className="text-xs font-bold text-slate-900">{formatName(company.contact.firstname, company.contact.lastname)}</p>
+                            <p className="text-[10px] text-slate-500">{company.contact.email}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="flex flex-wrap gap-2">
+                    <span className="inline-flex items-center gap-1 rounded-lg bg-blue-50 px-2 py-1 text-[10px] font-bold text-blue-700">
+                        <i className="ri-mail-send-line"></i>
+                        {company.email.split('@')[1]}
+                    </span>
+                    <span className="inline-flex items-center gap-1 rounded-lg bg-emerald-50 px-2 py-1 text-[10px] font-bold text-emerald-700">
+                        <i className="ri-phone-line"></i>
+                        Active
+                    </span>
+                </div>
+            </div>
+
+            <div className="mt-6">
+                <a
+                    href={company.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex w-full items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-xs font-bold text-white transition hover:bg-blue-600 active:scale-95"
                 >
-                    {product.stock > 10 ? 'Stok tersedia' : product.stock > 0 ? `Sisa ${product.stock}` : 'Habis'}
-                </span>
+                    Lihat Profil Perusahaan
+                </a>
             </div>
         </article>
     );
 }
 
 export default function ExplorerPage() {
-    const [products, setProducts] = useState<Product[]>([]);
-    const [filtered, setFiltered] = useState<Product[]>([]);
+    const [companies, setCompanies] = useState<Company[]>([]);
+    const [filtered, setFiltered] = useState<Company[]>([]);
     const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
     const [error, setError] = useState<string | null>(null);
     const [search, setSearch] = useState('');
-    const [category, setCategory] = useState('all');
+    const [country, setCountry] = useState('all');
     const [sortBy, setSortBy] = useState('none');
     const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
     const [fetchTime, setFetchTime] = useState<number | null>(null);
-    const [totalFromApi, setTotalFromApi] = useState<number>(0);
 
-    const fetchProducts = useCallback(async () => {
+    const fetchCompanies = useCallback(async () => {
         setStatus('loading');
         setError(null);
         const start = performance.now();
 
         try {
-            const res = await fetch('https://dummyjson.com/products?limit=30&select=id,title,description,price,discountPercentage,rating,stock,brand,category,thumbnail,images');
+            const res = await fetch('https://fakerapi.it/api/v1/companies?_quantity=30');
             if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`);
             const data: ApiResponse = await res.json();
             const elapsed = performance.now() - start;
 
-            setProducts(data.products);
-            setFiltered(data.products);
-            setTotalFromApi(data.total);
+            setCompanies(data.data);
+            setFiltered(data.data);
             setFetchTime(Math.round(elapsed));
             setStatus('success');
         } catch (err) {
@@ -177,45 +211,43 @@ export default function ExplorerPage() {
     }, []);
 
     useEffect(() => {
-        fetchProducts();
-    }, [fetchProducts]);
+        fetchCompanies();
+    }, [fetchCompanies]);
 
     useEffect(() => {
-        let result = [...products];
-        if (category !== 'all') {
-            result = result.filter((p) => p.category === category);
+        let result = [...companies];
+        if (country !== 'all') {
+            result = result.filter((c) => c.country === country);
         }
         if (search.trim()) {
             const q = search.toLowerCase();
             result = result.filter(
-                (p) =>
-                    p.title.toLowerCase().includes(q) ||
-                    p.description.toLowerCase().includes(q) ||
-                    (p.brand && p.brand.toLowerCase().includes(q)),
+                (c) =>
+                    c.name.toLowerCase().includes(q) ||
+                    c.email.toLowerCase().includes(q) ||
+                    c.country.toLowerCase().includes(q) ||
+                    c.contact.firstname.toLowerCase().includes(q) ||
+                    c.contact.lastname.toLowerCase().includes(q),
             );
         }
 
-        if (sortBy === 'price-low') {
-            result.sort((a, b) => a.price - b.price);
-        } else if (sortBy === 'price-high') {
-            result.sort((a, b) => b.price - a.price);
-        } else if (sortBy === 'rating') {
-            result.sort((a, b) => b.rating - a.rating);
-        } else if (sortBy === 'title') {
-            result.sort((a, b) => a.title.localeCompare(b.title));
+        if (sortBy === 'name') {
+            result.sort((a, b) => a.name.localeCompare(b.name));
+        } else if (sortBy === 'country') {
+            result.sort((a, b) => a.country.localeCompare(b.country));
         }
 
         setFiltered(result);
-    }, [search, category, sortBy, products]);
+    }, [search, country, sortBy, companies]);
 
     const stats = {
         total: filtered.length,
-        avgPrice: filtered.length ? filtered.reduce((acc, p) => acc + p.price, 0) / filtered.length : 0,
-        avgRating: filtered.length ? filtered.reduce((acc, p) => acc + p.rating, 0) / filtered.length : 0,
-        categories: new Set(filtered.map(p => p.category)).size
+        countries: new Set(filtered.map(c => c.country)).size,
+        activePartners: filtered.length, // Sample stat
+        avgResponse: "24h" // Sample stat
     };
 
-    const categories = ['all', ...Array.from(new Set(products.map((p) => p.category)))];
+    const countries = ['all', ...Array.from(new Set(companies.map((c) => c.country)))].sort();
 
     return (
         <div className="bg-white overflow-hidden" data-testid="explorer-page">
@@ -226,19 +258,10 @@ export default function ExplorerPage() {
                 <section className="relative isolate overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 sm:p-10">
                     <div className="max-w-3xl">
                         <h1 className="mt-4 text-3xl font-black leading-tight tracking-tight text-slate-900 sm:text-4xl lg:text-5xl">
-                            Eksperimen <span className="text-blue-600">Data API</span>
+                            Daftar <span className="text-blue-600">Mitra Perusahaan</span> Terdaftar
                         </h1>
                         <p className="mt-4 text-base leading-relaxed text-slate-600 sm:text-lg">
-                            Semua produk di halaman ini diambil langsung dari{' '}
-                            <a
-                                href="https://dummyjson.com/docs/products"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="font-semibold text-blue-600 underline decoration-blue-300 underline-offset-2 transition hover:text-blue-700"
-                            >
-                                dummyjson.com
-                            </a>
-                            {' '}lewat API. Untuk pelengkap dan memenuhi kriteria tugas :D
+                            Halaman ini menampilkan daftar perusahaan yang telah mendaftar dalam ekosistem OpenUMKM.
                         </p>
                     </div>
                 </section>
@@ -246,23 +269,23 @@ export default function ExplorerPage() {
                 {/* Stats Summary */}
                 <section className="grid grid-cols-2 gap-4 lg:grid-cols-4">
                     <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-blue-200">
-                        <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Total Produk</p>
+                        <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Total Mitra</p>
                         <p className="mt-1 text-2xl font-black text-slate-900">{stats.total}</p>
                     </div>
                     <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-blue-200">
-                        <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Rata-rata Harga</p>
-                        <p className="mt-1 text-2xl font-black text-slate-900">{formatCurrency(stats.avgPrice)}</p>
+                        <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Asal Negara</p>
+                        <p className="mt-1 text-2xl font-black text-slate-900">{stats.countries}</p>
                     </div>
                     <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-blue-200">
-                        <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Rata-rata Rating</p>
+                        <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Status Aktif</p>
                         <div className="mt-1 flex items-center gap-2">
-                            <p className="text-2xl font-black text-slate-900">{stats.avgRating.toFixed(1)}</p>
-                            <i className="ri-star-fill text-amber-400"></i>
+                            <p className="text-2xl font-black text-slate-900">{stats.activePartners}</p>
+                            <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
                         </div>
                     </div>
                     <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-blue-200">
-                        <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Kategori Aktif</p>
-                        <p className="mt-1 text-2xl font-black text-slate-900">{stats.categories}</p>
+                        <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Rata-rata Respon</p>
+                        <p className="mt-1 text-2xl font-black text-slate-900">{stats.avgResponse}</p>
                     </div>
                 </section>
 
@@ -275,7 +298,7 @@ export default function ExplorerPage() {
                             <i className="ri-search-line absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
                             <input
                                 type="text"
-                                placeholder="Cari produk..."
+                                placeholder="Cari..."
                                 className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-10 pr-4 text-sm text-slate-900 transition placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10"
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
@@ -292,10 +315,8 @@ export default function ExplorerPage() {
                                     onChange={(e) => setSortBy(e.target.value)}
                                 >
                                     <option value="none">Default</option>
-                                    <option value="price-low">Harga Terendah</option>
-                                    <option value="price-high">Harga Tertinggi</option>
-                                    <option value="rating">Rating Tertinggi</option>
-                                    <option value="title">Nama (A-Z)</option>
+                                    <option value="name">Nama (A-Z)</option>
+                                    <option value="country">Negara</option>
                                 </select>
                             </div>
 
@@ -322,14 +343,14 @@ export default function ExplorerPage() {
                     </div>
 
                     <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-slate-100">
-                        <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Filter:</span>
-                        {categories.map((c) => (
+                        <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Filter Negara:</span>
+                        {countries.map((c) => (
                             <button
                                 key={c}
-                                onClick={() => setCategory(c)}
-                                className={`rounded-full px-3 py-1 text-xs font-medium transition ${category === c ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+                                onClick={() => setCountry(c)}
+                                className={`rounded-full px-3 py-1 text-xs font-medium transition ${country === c ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
                             >
-                                {c === 'all' ? 'Semua' : c.replace(/-/g, ' ')}
+                                {c === 'all' ? 'Semua Negara' : c}
                             </button>
                         ))}
                     </div>
@@ -339,10 +360,10 @@ export default function ExplorerPage() {
                 <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
                     <div className="mb-6">
                         <h2 className="text-2xl font-black tracking-tight text-slate-900">
-                            Daftar Produk
+                            Daftar Mitra
                         </h2>
                         <p className="mt-1 text-sm text-slate-500">
-                            Data di bawah di-fetch dari API.
+                            Berikut adalah daftar perusahaan yang telah bergabung.
                         </p>
                     </div>
 
@@ -379,9 +400,9 @@ export default function ExplorerPage() {
                     {status === 'success' && filtered.length > 0 && (
                         <>
                             {viewMode === 'grid' ? (
-                                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" data-testid="product-grid">
-                                    {filtered.map((product) => (
-                                        <ProductCard key={product.id} product={product} />
+                                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3" data-testid="company-grid">
+                                    {filtered.map((company) => (
+                                        <CompanyCard key={company.id} company={company} />
                                     ))}
                                 </div>
                             ) : (
@@ -389,42 +410,37 @@ export default function ExplorerPage() {
                                     <table className="w-full text-left text-sm">
                                         <thead className="bg-slate-50 text-xs font-bold uppercase tracking-wider text-slate-500">
                                             <tr>
-                                                <th className="px-4 py-3">Produk</th>
-                                                <th className="px-4 py-3">Kategori</th>
-                                                <th className="px-4 py-3">Brand</th>
-                                                <th className="px-4 py-3">Rating</th>
-                                                <th className="px-4 py-3">Stok</th>
-                                                <th className="px-4 py-3 text-right">Harga</th>
+                                                <th className="px-4 py-3">Perusahaan</th>
+                                                <th className="px-4 py-3">Negara</th>
+                                                <th className="px-4 py-3">Email</th>
+                                                <th className="px-4 py-3">Kontak Person</th>
+                                                <th className="px-4 py-3 text-right">Aksi</th>
                                             </tr>
                                         </thead>
                                         <tbody className="divide-y divide-slate-200 bg-white">
-                                            {filtered.map((product) => (
-                                                <tr key={product.id} className="hover:bg-slate-50 transition">
+                                            {filtered.map((company) => (
+                                                <tr key={company.id} className="hover:bg-slate-50 transition">
                                                     <td className="px-4 py-4">
                                                         <div className="flex items-center gap-3">
-                                                            <img src={product.thumbnail} alt="" className="h-10 w-10 rounded-lg object-cover" />
-                                                            <span className="font-bold text-slate-900">{product.title}</span>
+                                                            <CompanyAvatar name={company.name} image={company.image} />
+                                                            <span className="font-bold text-slate-900">{company.name}</span>
                                                         </div>
                                                     </td>
                                                     <td className="px-4 py-4">
-                                                        <span className="inline-flex rounded-full bg-slate-100 px-2 py-1 text-[10px] font-bold uppercase text-slate-600">
-                                                            {product.category}
+                                                        <span className="inline-flex rounded-full bg-blue-50 px-2 py-1 text-[10px] font-bold uppercase text-blue-600">
+                                                            {company.country}
                                                         </span>
                                                     </td>
-                                                    <td className="px-4 py-4 text-slate-600">{product.brand || '-'}</td>
+                                                    <td className="px-4 py-4 text-slate-600">{company.email}</td>
                                                     <td className="px-4 py-4">
-                                                        <div className="flex items-center gap-1">
-                                                            <i className="ri-star-fill text-amber-400"></i>
-                                                            <span className="font-medium text-slate-900">{product.rating}</span>
+                                                        <div className="flex items-center gap-2">
+                                                            <span className="font-medium text-slate-900">{formatName(company.contact.firstname, company.contact.lastname)}</span>
                                                         </div>
                                                     </td>
-                                                    <td className="px-4 py-4">
-                                                        <span className={product.stock > 10 ? 'text-emerald-600' : 'text-amber-600 font-bold'}>
-                                                            {product.stock}
-                                                        </span>
-                                                    </td>
-                                                    <td className="px-4 py-4 text-right font-black text-slate-900">
-                                                        {formatCurrency(product.price * (1 - product.discountPercentage / 100))}
+                                                    <td className="px-4 py-4 text-right">
+                                                        <a href={company.website} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline font-bold text-xs">
+                                                            Website
+                                                        </a>
                                                     </td>
                                                 </tr>
                                             ))}
@@ -446,7 +462,7 @@ export default function ExplorerPage() {
                                 type="button"
                                 onClick={() => {
                                     setSearch('');
-                                    setCategory('all');
+                                    setCountry('all');
                                 }}
                                 className="mt-2 rounded-xl border border-slate-300 px-5 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
                             >
