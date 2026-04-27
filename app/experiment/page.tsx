@@ -389,7 +389,7 @@ export default function ExplorerPage() {
                             </div>
                             <button
                                 type="button"
-                                onClick={fetchProducts}
+                                onClick={fetchCompanies}
                                 className="rounded-xl bg-red-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-red-700"
                             >
                                 Coba Lagi
@@ -456,8 +456,8 @@ export default function ExplorerPage() {
                             <div className="flex h-14 w-14 items-center justify-center rounded-full bg-slate-100 text-slate-400">
                                 <i className="ri-search-eye-line text-3xl" />
                             </div>
-                            <p className="font-bold text-slate-700">Nggak ada yang cocok</p>
-                            <p className="text-sm text-slate-500">Coba ganti keyword atau kategorinya.</p>
+                            <p className="font-bold text-slate-700">Tidak ada yang cocok</p>
+                            <p className="text-sm text-slate-500">Coba ubah keyword atau negaranya.</p>
                             <button
                                 type="button"
                                 onClick={() => {
