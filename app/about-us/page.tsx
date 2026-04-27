@@ -228,7 +228,7 @@ export default function AboutUsPage() {
         {/* CTA */}
         <section
           data-aos="fade-up"
-          className="rounded-2xl border border-slate-200 bg-gradient-to-br from-blue-50 via-white to-emerald-50 p-8 sm:p-10"
+          className="rounded-2xl border border-slate-200 bg-slate-50 p-8 sm:p-10"
         >
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>

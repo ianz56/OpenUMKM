@@ -188,7 +188,7 @@ export default function ContactPage() {
             </div>
 
             <div
-              className="rounded-2xl border border-slate-200 bg-gradient-to-br from-blue-600 to-blue-700 p-6 text-white"
+              className="rounded-2xl border border-slate-200 bg-blue-600 p-6 text-white"
               data-testid="contact-cta-card"
             >
               <h3 className="text-lg font-black">Belum Daftar Toko?</h3>

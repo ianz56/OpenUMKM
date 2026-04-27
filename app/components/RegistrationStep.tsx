@@ -15,13 +15,13 @@ const RegistrationSteps = () => {
       </div>
 
       <div className="relative mt-8">
-        <div className="absolute top-8 left-14 right-14 hidden h-0.5 bg-gradient-to-r from-blue-200 via-blue-300 to-emerald-200 lg:block"></div>
+        <div className="absolute top-8 left-14 right-14 hidden h-0.5 bg-blue-100 lg:block"></div>
         <ol className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
           {steps.map((item, index) => (
             <li key={index} className="relative">
               <article className="relative z-10 h-full rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
                 <div className="flex flex-col items-center gap-3 text-center">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-blue-600 to-blue-700 text-lg font-black text-white shadow">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-600 text-lg font-black text-white shadow">
                     {index + 1}
                   </div>
                   <h3 className="text-base font-bold text-slate-900">{item.title}</h3>

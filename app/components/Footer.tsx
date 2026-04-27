@@ -11,7 +11,7 @@ const Footer = () => {
     <footer className="border-t border-slate-200 bg-white py-12">
       <div className="mx-auto max-w-[1220px] px-4 sm:px-6 lg:px-8">
         {/* Call to Action Box */}
-        <div className="rounded-2xl bg-gradient-to-r from-blue-700 via-blue-600 to-blue-500 p-8 text-white shadow-lg">
+        <div className="rounded-2xl bg-blue-600 p-8 text-white shadow-lg">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
             <div>
               <h2 className="text-2xl font-black tracking-tight sm:text-3xl">
