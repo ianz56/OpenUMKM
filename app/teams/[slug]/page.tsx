@@ -3,13 +3,10 @@ import Footer from "@/app/components/Footer";
 import Link from "next/link";
 import Navbar from "@/app/components/Navbar";
 
-async function getMember(slug: string) {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/data/teams.json`,
-  );
-  if (!res.ok) return null;
-  const data = await res.json();
-  return data.teams.find((m: any) => m.slug === slug);
+import teamsData from "@/public/data/teams.json";
+
+function getMember(slug: string) {
+  return teamsData.teams.find((m: any) => m.slug === slug);
 }
 
 export default async function TeamDetailPage({

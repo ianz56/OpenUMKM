@@ -2,13 +2,10 @@ import Navbar from "@/app/components/Navbar";
 import Footer from "@/app/components/Footer";
 import Link from "next/link";
 
-async function getTeams() {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/data/teams.json`,
-    { cache: "no-store" },
-  );
-  if (!res.ok) return { teams: [] };
-  return res.json();
+import teamsData from "@/public/data/teams.json";
+
+function getTeams() {
+  return teamsData;
 }
 
 export default async function TeamsPage() {
