@@ -1,5 +1,4 @@
 import Benefit from './components/Benefit';
-import ContactForm from './components/ContactForm';
 import FeaturesSection from './components/Feature';
 import Footer from '@/app/components/Footer';
 import Hero from './components/Hero';
@@ -22,7 +21,6 @@ export default function Home() {
         <div data-aos="zoom-in"><FeaturesSection /></div>
         <div data-aos="fade-up"><UserRolesSection /></div>
         <div data-aos="fade-up"><RegistrationSteps /></div>
-        <div data-aos="fade-up"><ContactForm /></div>
       </main>
 
       <Footer />
